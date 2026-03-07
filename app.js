@@ -1,6 +1,7 @@
 let questions=[]
 let editIndex=null
 let editField=null
+let originalFileName="questions"
 
 document.getElementById("fileInput").addEventListener("change",loadFile)
 document.getElementById("searchBox").addEventListener("input",searchQuestions)
@@ -10,6 +11,8 @@ function loadFile(event){
 const file=event.target.files[0]
 
 if(!file) return
+
+originalFileName=file.name.replace(".json","")
 
 const reader=new FileReader()
 
@@ -189,13 +192,15 @@ range.insertNode(node)
 
 function exportJSON(){
 
+const fileName = originalFileName + "_qa_verified.json"
+
 const dataStr="data:text/json;charset=utf-8,"+
 encodeURIComponent(JSON.stringify(questions,null,2))
 
 const a=document.createElement("a")
 
 a.href=dataStr
-a.download="questions_fixed.json"
+a.download=fileName
 
 a.click()
 
