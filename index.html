@@ -2,67 +2,39 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>QA Question Editor</title>
+<title>QA Question Reviewer</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>QA Question Editor</h1>
+<h1>QA Question Reviewer</h1>
 
 <input type="file" id="fileInput" accept=".json">
 
-<div class="layout">
+<button onclick="exportJSON()">Export Updated JSON</button>
 
-<div class="sidebar">
-<h3>Questions</h3>
-<ul id="questionList"></ul>
+<div id="questionsContainer"></div>
 
-<button onclick="exportJSON()">Export JSON</button>
-</div>
+<div id="editorModal" class="modal hidden">
 
-<div class="editorArea">
+<div class="modalContent">
 
 <div class="toolbar">
-<button onclick="format('bold')"><b>B</b></button>
-<button onclick="format('italic')"><i>I</i></button>
-<button onclick="format('underline')"><u>U</u></button>
-<button onclick="format('strikeThrough')"><s>S</s></button>
+
+<button onclick="applyTag('b')"><b>B</b></button>
+<button onclick="applyTag('i')"><i>I</i></button>
+<button onclick="applyTag('u')"><u>U</u></button>
+<button onclick="applyTag('s')"><s>S</s></button>
+
 </div>
 
-<h3>ID</h3>
-<input id="qid">
-
-<h3>Question</h3>
-<div id="question" contenteditable="true"></div>
-
-<h3>Option A</h3>
-<input id="optA">
-
-<h3>Option B</h3>
-<input id="optB">
-
-<h3>Option C</h3>
-<input id="optC">
-
-<h3>Option D</h3>
-<input id="optD">
-
-<h3>Option E</h3>
-<input id="optE">
-
-<h3>Correct</h3>
-<input id="correct">
-
-<h3>Feedback</h3>
-<div id="feedback" contenteditable="true"></div>
+<div id="editor" contenteditable="true"></div>
 
 <br>
 
-<button onclick="save()">Save</button>
-
-<h3>Preview</h3>
-<div id="preview"></div>
+<button id="saveBtn">Save</button>
+<button onclick="closeEditor()">Cancel</button>
 
 </div>
 
