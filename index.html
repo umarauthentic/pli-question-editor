@@ -2,23 +2,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Question Editor</title>
+<title>QA Question Editor</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>Exam Question Editor</h1>
+<h1>QA Question Editor</h1>
 
 <input type="file" id="fileInput" accept=".json">
-
-<div class="layout">
 
 <div class="layout">
 
 <div class="sidebar">
 <h3>Questions</h3>
 <ul id="questionList"></ul>
+
 <button onclick="exportJSON()">Export JSON</button>
 </div>
 
@@ -37,12 +36,19 @@
 <h3>Question</h3>
 <div id="question" contenteditable="true"></div>
 
-<h3>Options</h3>
-
+<h3>Option A</h3>
 <input id="optA">
+
+<h3>Option B</h3>
 <input id="optB">
+
+<h3>Option C</h3>
 <input id="optC">
+
+<h3>Option D</h3>
 <input id="optD">
+
+<h3>Option E</h3>
 <input id="optE">
 
 <h3>Correct</h3>
@@ -52,7 +58,11 @@
 <div id="feedback" contenteditable="true"></div>
 
 <br>
+
 <button onclick="save()">Save</button>
+
+<h3>Preview</h3>
+<div id="preview"></div>
 
 </div>
 
