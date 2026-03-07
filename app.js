@@ -1,13 +1,6 @@
 let questions=[]
-let current=0
-
-const saved=localStorage.getItem("qa_questions")
-
-if(saved){
-questions=JSON.parse(saved)
-renderList()
-loadQuestion(0)
-}
+let editIndex=null
+let editField=null
 
 document.getElementById("fileInput").addEventListener("change",loadFile)
 
@@ -23,10 +16,7 @@ reader.onload=function(e){
 
 questions=JSON.parse(e.target.result)
 
-localStorage.setItem("qa_questions",JSON.stringify(questions))
-
-renderList()
-loadQuestion(0)
+renderQuestions()
 
 }
 
@@ -34,98 +24,125 @@ reader.readAsText(file)
 
 }
 
-function renderList(){
+function renderQuestions(){
 
-const list=document.getElementById("questionList")
+const container=document.getElementById("questionsContainer")
 
-list.innerHTML=""
+container.innerHTML=""
 
-questions.forEach((q,i)=>{
+questions.forEach((q,index)=>{
 
-const li=document.createElement("li")
+const div=document.createElement("div")
+div.className="card"
 
-li.innerText=q.ID
+div.innerHTML=`
 
-li.onclick=()=>loadQuestion(i)
+<h3>${q.ID}</h3>
 
-list.appendChild(li)
+<div>
+<span class="question">${q.QUESTION}</span>
+<button class="editBtn" onclick="openEditor(${index},'QUESTION')">Edit</button>
+</div>
+
+<br>
+
+<div class="option">
+A. ${q.OPTION_A}
+<button class="editBtn" onclick="openEditor(${index},'OPTION_A')">Edit</button>
+</div>
+
+<div class="option">
+B. ${q.OPTION_B}
+<button class="editBtn" onclick="openEditor(${index},'OPTION_B')">Edit</button>
+</div>
+
+<div class="option">
+C. ${q.OPTION_C}
+<button class="editBtn" onclick="openEditor(${index},'OPTION_C')">Edit</button>
+</div>
+
+<div class="option">
+D. ${q.OPTION_D}
+<button class="editBtn" onclick="openEditor(${index},'OPTION_D')">Edit</button>
+</div>
+
+<div class="option">
+E. ${q.OPTION_E}
+<button class="editBtn" onclick="openEditor(${index},'OPTION_E')">Edit</button>
+</div>
+
+<br>
+
+<div class="correct">
+Correct: ${q.CORRECT}
+<button class="editBtn" onclick="openEditor(${index},'CORRECT')">Edit</button>
+</div>
+
+<div class="feedback">
+${q.FEEDBACK}
+<button class="editBtn" onclick="openEditor(${index},'FEEDBACK')">Edit</button>
+</div>
+
+`
+
+container.appendChild(div)
 
 })
 
 }
 
-function loadQuestion(i){
+function openEditor(index,field){
 
-current=i
+editIndex=index
+editField=field
 
-const q=questions[i]
+const modal=document.getElementById("editorModal")
+const editor=document.getElementById("editor")
 
-qid.value=q.ID
-question.innerHTML=q.QUESTION
-optA.value=q.OPTION_A
-optB.value=q.OPTION_B
-optC.value=q.OPTION_C
-optD.value=q.OPTION_D
-optE.value=q.OPTION_E
-correct.value=q.CORRECT
-feedback.innerHTML=q.FEEDBACK
+editor.innerHTML=questions[index][field]
 
-renderPreview()
+modal.classList.remove("hidden")
+
+document.getElementById("saveBtn").onclick=saveEdit
 
 }
 
-function renderPreview(){
+function closeEditor(){
+document.getElementById("editorModal").classList.add("hidden")
+}
 
-const q=questions[current]
+function saveEdit(){
 
-preview.innerHTML=`
+const editor=document.getElementById("editor")
 
-<h3>${q.ID}</h3>
+questions[editIndex][editField]=editor.innerHTML
 
-<div class="question">${q.QUESTION}</div>
+closeEditor()
 
-<ul>
-
-<li class="option">A. ${q.OPTION_A}</li>
-<li class="option">B. ${q.OPTION_B}</li>
-<li class="option">C. ${q.OPTION_C}</li>
-<li class="option">D. ${q.OPTION_D}</li>
-<li class="option">E. ${q.OPTION_E}</li>
-
-</ul>
-
-<b>Correct:</b> ${q.CORRECT}
-
-<div>${q.FEEDBACK}</div>
-
-`
+renderQuestions()
 
 }
 
-function save(){
+function applyTag(tag){
 
-const q=questions[current]
+const sel=window.getSelection()
 
-q.ID=qid.value
-q.QUESTION=question.innerHTML
-q.OPTION_A=optA.value
-q.OPTION_B=optB.value
-q.OPTION_C=optC.value
-q.OPTION_D=optD.value
-q.OPTION_E=optE.value
-q.CORRECT=correct.value
-q.FEEDBACK=feedback.innerHTML
+if(!sel.rangeCount) return
 
-localStorage.setItem("qa_questions",JSON.stringify(questions))
+const range=sel.getRangeAt(0)
 
-renderPreview()
+const selectedText=range.toString()
 
-alert("Saved")
+if(selectedText.length===0) return
 
-}
+const newNode=document.createElement(tag)
 
-function format(cmd){
-document.execCommand(cmd,false,null)
+newNode.textContent=selectedText
+
+range.deleteContents()
+
+range.insertNode(newNode)
+
 }
 
 function exportJSON(){
