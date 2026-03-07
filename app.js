@@ -3,6 +3,7 @@ let editIndex=null
 let editField=null
 
 document.getElementById("fileInput").addEventListener("change",loadFile)
+document.getElementById("searchBox").addEventListener("input",searchQuestions)
 
 function loadFile(event){
 
@@ -16,6 +17,7 @@ reader.onload=function(e){
 
 questions=JSON.parse(e.target.result)
 
+renderNavigation()
 renderQuestions()
 
 }
@@ -24,27 +26,65 @@ reader.readAsText(file)
 
 }
 
+function renderNavigation(){
+
+const nav=document.getElementById("questionNav")
+nav.innerHTML=""
+
+questions.forEach((q,i)=>{
+
+const li=document.createElement("li")
+li.innerText=q.ID
+
+li.onclick=function(){
+
+document.getElementById("q"+i).scrollIntoView({
+behavior:"smooth"
+})
+
+highlightNav(i)
+
+}
+
+nav.appendChild(li)
+
+})
+
+}
+
+function highlightNav(index){
+
+document.querySelectorAll("#sidebar li").forEach(li=>{
+li.classList.remove("active")
+})
+
+document.querySelectorAll("#sidebar li")[index].classList.add("active")
+
+}
+
 function renderQuestions(){
 
 const container=document.getElementById("questionsContainer")
-
 container.innerHTML=""
 
 questions.forEach((q,index)=>{
 
 const div=document.createElement("div")
 div.className="card"
+div.id="q"+index
 
 div.innerHTML=`
 
 <h3>${q.ID}</h3>
 
-<div>
-<span class="question">${q.QUESTION}</span>
+<div class="sectionTitle">
+Question
 <button class="editBtn" onclick="openEditor(${index},'QUESTION')">Edit</button>
 </div>
 
-<br>
+<div>${q.QUESTION}</div>
+
+<div class="sectionTitle">Options</div>
 
 <div class="option">
 A. ${q.OPTION_A}
@@ -71,17 +111,19 @@ E. ${q.OPTION_E}
 <button class="editBtn" onclick="openEditor(${index},'OPTION_E')">Edit</button>
 </div>
 
-<br>
-
-<div class="correct">
-Correct: ${q.CORRECT}
+<div class="sectionTitle">
+Correct Answer
 <button class="editBtn" onclick="openEditor(${index},'CORRECT')">Edit</button>
 </div>
 
-<div class="feedback">
-${q.FEEDBACK}
+<div class="correct">${q.CORRECT}</div>
+
+<div class="sectionTitle">
+Feedback
 <button class="editBtn" onclick="openEditor(${index},'FEEDBACK')">Edit</button>
 </div>
+
+<div class="feedback">${q.FEEDBACK}</div>
 
 `
 
@@ -131,17 +173,17 @@ if(!sel.rangeCount) return
 
 const range=sel.getRangeAt(0)
 
-const selectedText=range.toString()
+const text=range.toString()
 
-if(selectedText.length===0) return
+if(text.length===0) return
 
-const newNode=document.createElement(tag)
+const node=document.createElement(tag)
 
-newNode.textContent=selectedText
+node.textContent=text
 
 range.deleteContents()
 
-range.insertNode(newNode)
+range.insertNode(node)
 
 }
 
@@ -158,3 +200,46 @@ a.download="questions_fixed.json"
 a.click()
 
 }
+
+function searchQuestions(){
+
+const term=document.getElementById("searchBox").value.toLowerCase()
+
+document.querySelectorAll(".card").forEach(card=>{
+
+if(card.innerText.toLowerCase().includes(term))
+card.style.display="block"
+else
+card.style.display="none"
+
+})
+
+}
+
+document.addEventListener("keydown",function(e){
+
+if(e.ctrlKey && e.key==="b"){
+applyTag("b")
+e.preventDefault()
+}
+
+if(e.ctrlKey && e.key==="i"){
+applyTag("i")
+e.preventDefault()
+}
+
+if(e.ctrlKey && e.key==="u"){
+applyTag("u")
+e.preventDefault()
+}
+
+if(e.ctrlKey && e.key==="s"){
+saveEdit()
+e.preventDefault()
+}
+
+if(e.key==="Escape"){
+closeEditor()
+}
+
+})
