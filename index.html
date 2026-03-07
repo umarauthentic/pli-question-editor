@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Question Editor</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>Exam Question Editor</h1>
+
+<input type="file" id="fileInput" accept=".json">
+
+<div class="layout">
+
+<div class="layout">
+
+<div class="sidebar">
+<h3>Questions</h3>
+<ul id="questionList"></ul>
+<button onclick="exportJSON()">Export JSON</button>
+</div>
+
+<div class="editorArea">
+
+<div class="toolbar">
+<button onclick="format('bold')"><b>B</b></button>
+<button onclick="format('italic')"><i>I</i></button>
+<button onclick="format('underline')"><u>U</u></button>
+<button onclick="format('strikeThrough')"><s>S</s></button>
+</div>
+
+<h3>ID</h3>
+<input id="qid">
+
+<h3>Question</h3>
+<div id="question" contenteditable="true"></div>
+
+<h3>Options</h3>
+
+<input id="optA">
+<input id="optB">
+<input id="optC">
+<input id="optD">
+<input id="optE">
+
+<h3>Correct</h3>
+<input id="correct">
+
+<h3>Feedback</h3>
+<div id="feedback" contenteditable="true"></div>
+
+<br>
+<button onclick="save()">Save</button>
+
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
