@@ -170,26 +170,45 @@ renderQuestions()
 
 function applyTag(tag){
 
-const sel=window.getSelection()
+const sel = window.getSelection()
 
 if(!sel.rangeCount) return
 
-const range=sel.getRangeAt(0)
+const range = sel.getRangeAt(0)
 
-const text=range.toString()
+let node = sel.anchorNode
 
-if(text.length===0) return
+while(node && node !== document){
 
-const node=document.createElement(tag)
+if(node.nodeName && node.nodeName.toLowerCase() === tag){
 
-node.textContent=text
+const parent = node.parentNode
 
-range.deleteContents()
+while(node.firstChild){
+parent.insertBefore(node.firstChild,node)
+}
 
-range.insertNode(node)
+parent.removeChild(node)
+
+return
+}
+
+node = node.parentNode
 
 }
 
+const selectedText = range.toString()
+
+if(selectedText.length === 0) return
+
+const newNode = document.createElement(tag)
+
+newNode.textContent = selectedText
+
+range.deleteContents()
+range.insertNode(newNode)
+
+}
 function exportJSON(){
 
 const fileName = originalFileName + "_qa_verified.json"
@@ -248,3 +267,4 @@ closeEditor()
 }
 
 })
+
